@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 import os
 
 def find_energy_level(E=0, show_plot=True):
@@ -58,6 +59,7 @@ def find_energy_level(E=0, show_plot=True):
         plt.show()
 
 def find_n_solutions(n, show_plot=True):
+    start_time = time.time()
     first_energy = round(find_energy_level(0, show_plot), 2)
     solutions = [first_energy]
     while len(solutions) < n:
@@ -67,6 +69,9 @@ def find_n_solutions(n, show_plot=True):
         solutions.append(new_solution)
         os.system('clear')
         print('solutions: ', solutions)
+    end_time = time.time()  # Record the end time
+    elapsed_time = end_time - start_time  # Calculate the elapsed time
+    print(f"Time taken: {elapsed_time:.2f} seconds")
     return solutions
 
 first_10_energies = find_n_solutions(10, False)
