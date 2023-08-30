@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
-def find_energy_level(E=0, show_plot = True):
+def find_energy_level(E=0, show_plot=True):
     
-    if(show_plot):
+    if show_plot:
         plt.figure()
         plt.xlabel('x')
         plt.ylabel('psi')
@@ -13,14 +13,18 @@ def find_energy_level(E=0, show_plot = True):
     L = 1.0  # Length of the box
     hc = 1.0  # m/h-bar^2
     dx = 0.001  # Step size
-    dE = 0.02  # Energy step size
+    dE = 0.02  # Initial energy step size
     searching = True  # search condition
+    
+    # Set tolerance and range for the energy steps
+    min_dE=0.001
+    max_dE=0.1
+    tolerance=0.002
+    
     while searching:
         x = 0.0  # initial Position
         psi = 0.0  # Wave function
         dpsi = 1.0  # Derivative of the wave function
-        x_values = []  # temp store x values for plotting
-        psi_values = []  # temp store psi values for plotting
 
         while x <= L:
             ddpsi = -2 * hc * E * psi  # Second derivative of psi
@@ -28,27 +32,25 @@ def find_energy_level(E=0, show_plot = True):
             psi += dpsi * dx  # Update psi
             x += dx  # Update position
 
-            x_values.append(x)
-            psi_values.append(psi)
+        # Adaptive energy step
+        if abs(psi) > tolerance:
+            dE = min(max_dE, abs(psi) * 0.01)  # Larger step if far from zero
+        else:
+            dE = max(min_dE, abs(psi) * 0.1)  # Smaller step if close to zero
 
         # Plotting
-        if(show_plot):
-            plt.plot(x_values, psi_values, label=f'E = {E:.2f}')
+        if show_plot:
+            plt.plot([x for x in range(int(L/dx) + 1)], [psi for _ in range(int(L/dx) + 1)], label=f'E = {E:.2f}')
             plt.pause(0.00001)
             plt.clf()
 
         # Check boundary condition
-        if abs(psi) < 0.002:
+        if abs(psi) < tolerance:
             searching = False
-            # print(f"Energy: {E}")
-            # print(f"Wave function at x = L: {psi}")
             return E
 
         E += dE  # Update energy for the next iteration
-        # print('Try', round(E, 2))
 
-    if(show_plot):
-        plt.show()
 
 def find_n_solutions(n, show_plot = True):
     first_energy = round(find_energy_level(0, show_plot),2)
@@ -58,6 +60,7 @@ def find_n_solutions(n, show_plot = True):
         energy_guess = solutions[index]+2
         new_solution = round(find_energy_level(energy_guess, show_plot), 2)
         solutions.append(new_solution)
+        
         os.system('clear')
         print('solutions: ',solutions)
     return solutions
