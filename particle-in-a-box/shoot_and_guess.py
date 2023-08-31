@@ -13,7 +13,7 @@ def find_energy_level(E=0, show_plot = True):
     
     L = 1.0  # Length of the box
     hc = 1.0  # m/h-bar^2
-    dx = 0.001  # Step size
+    dx = 0.0001  # Step size
     dE = 0.02  # Energy step size
     searching = True  # search condition
     while searching:
@@ -39,7 +39,7 @@ def find_energy_level(E=0, show_plot = True):
             plt.clf()
 
         # Check boundary condition
-        if abs(psi) < 0.002:
+        if abs(psi) < 0.0002:
             searching = False
             # print(f"Energy: {E}")
             # print(f"Wave function at x = L: {psi}")
@@ -50,6 +50,8 @@ def find_energy_level(E=0, show_plot = True):
 
     if(show_plot):
         plt.show()
+        
+# find_energy_level(300)
 
 def find_n_solutions(n, show_plot = True):
     start_time = time.time()
